@@ -12,14 +12,18 @@
     app.get('/', (req, res) => {
         res.render("home")
     });
-    app.get('/makecampground',async (req, res) => {
-        const campground = new Campground({
-            title: "My Backyard", 
-            description: "Cheap Camping"
-        })
-        await campground.save()
-        res.send(campground)
+    
+    app.get('/campgrounds/:id',async (req, res) => {
+       const {id} = req.params;
+       const campground = await Campground.findById(id)
+       res.render("campgrounds/show",{campground})
     });
+
+    app.get('/campgrounds',async (req, res) => {
+       const campground = await Campground.find({});
+       res.render("campgrounds/index",{campgrounds:campground})
+    });
+
     app.listen(process.env.PORT,() => {
         console.log(`Listening on Port ${process.env.PORT}`);
     });

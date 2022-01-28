@@ -30,7 +30,7 @@
     // Remove campground 
     app.delete("/campgrounds/:id", async (req, res) => {
         const { id } = req.params;
-        await Campground.findByIdAndRemove(id,req.body.campgrounds);
+        await Campground.findByIdAndRemove(id);
         res.redirect(`/campgrounds`)
     })
     

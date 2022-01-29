@@ -1,4 +1,4 @@
-((express, app, dotenv, path, mongoose, Campground, methodOverride) => {
+((express, app, dotenv, path, mongoose, Campground, methodOverride, ejsMate) => {
 
     mongoose.connect("mongodb://localhost:27017/lb-camp",);
     mongoose.connection.on("error", console.error.bind(console, "Connection Error"))
@@ -6,11 +6,13 @@
         console.log("Database Connected");
     });
 
-    app.use(methodOverride("_method"));
-    app.use(express.urlencoded({extended: true}));
-    
+    app.engine('ejs',ejsMate)
     app.set("view engine", "ejs");
     app.set("views",path.join(__dirname,"views"));
+    
+    // Middlewares:
+    app.use(methodOverride("_method"));
+    app.use(express.urlencoded({extended: true}));
     
     // home route
     app.get('/', (req, res) => {
@@ -58,7 +60,6 @@
        const campground = await Campground.find({});
        res.render("campgrounds/index",{campgrounds:campground})
     });
-
     
     app.listen(process.env.PORT,() => {
         console.log(`Listening on Port ${process.env.PORT}`);
@@ -71,5 +72,6 @@
     require("path"),
     require('mongoose'),
     require('./models/campground'),
-    require('method-override')
+    require('method-override'),
+    require('ejs-mate')
 );

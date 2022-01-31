@@ -14,6 +14,9 @@
                             <h5 class="card-title"><%= campground.title%></h5>
                             <p class="card-text"><%= campground.description%></p>
                             <p class="card-text">
+                                <small><%= campground.price?`Rs. ${campground.price.toString()}`:"FREE" %></small>
+                            </p>
+                            <p class="card-text">
                                 <small class="text-muted"><%= campground.location%></small>
                             </p>
                             <form action="/campgrounds/<%= campground._id%>"><button class="btn btn-primary">View Campground</button></form>

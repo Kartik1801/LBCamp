@@ -1,13 +1,25 @@
 <%- layout("/layouts/boilerplate") %> 
-    <h2><%= campground.title %></h2> 
-    <h3><%= campground.location %></h3>
-    <img width=600 height=500 src="<%= campground.image%>">
-    <p><%= campground.description %></p>
-    <p>Price: <%= campground.price?`$&#8377; {campground.price.toString()}`:"FREE" %></p>
-    <a href="/campgrounds/<%= campground._id %>/edit">Edit</a>
-    <form action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
-        <button>Delete campground</button>
-    </form>
-    <footer>
-        <a href="/campgrounds">Show All Campgrounds</a>
-    </footer> 
+
+<div class="row">
+    <div class="col-6 offset-3">
+        <div class="card mb-3">
+            <img src="<%= campground.image%>" class="card-img-top" alt="...">
+            <div class="card-body">
+              <h5 class="card-title"><%= campground.title %></h5>
+              <p class="card-text"><%= campground.description %></p>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Location: <%= campground.location %></li>
+              <li class="list-group-item">Price: <%= campground.price?`Rs. ${campground.price.toString()}`:"FREE" %></li>
+            </ul>
+            <div class="card-body">
+                <a class ="btn btn-success" href="/campgrounds/<%= campground._id %>/edit">Edit Campground</a>
+                <a class ="btn btn-secondary" href="/campgrounds">Show All Campgrounds</a>
+                <form style="display: inline;"action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
+                    <button class="btn btn-danger">Delete campground</button>
+                </form>
+            </div>
+          </div>
+        
+    </div>
+</div>

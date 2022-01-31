@@ -12,6 +12,7 @@
             const camp = new Campground({
                 title: `${sample(descriptors)} ${sample(places)} `,
                 location: ` ${citiesArray[random].city}, ${ citiesArray[random].state}`,
+                price: Math.round(Math.random() * 5000),
                 image: `https://source.unsplash.com/collection/483251`,
                 description: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor impedit facere dolores, corporis accusamus sed sunt est exercitationem! Sit voluptate sapiente delectus tempora recusandae soluta at hic libero odio aut.`
             }

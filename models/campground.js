@@ -7,10 +7,6 @@
         location: String,
     })
     const Campground =  mongoose.model('Campground',CampgroundSchema)
-    const camp = new Campground({
-        title: "Fuji Park",
-        description: "Reasonable Rates, Great View. Worth it All!!"
-    })
     module.exports = Campground;
 })(
     require("mongoose"),

@@ -22,6 +22,9 @@
         res.render("campgrounds/new");
     });
     app.post("/campgrounds", wrapAsync(async (req, res, next) => {
+       if (!req.body.campgrounds){
+           throw new generateError(400, "Missing/Invalid campgrounds Data.")
+       }
         const camp = new Campground(req.body.campgrounds);
         await camp.save();
         res.redirect("/campgrounds");
@@ -30,6 +33,9 @@
     // Remove a Campground:
     app.delete("/campgrounds/:id", wrapAsync(async (req, res, next) => {
         const { id } = req.params;
+        if (!id){
+            throw new generateError(400, "Missing/Invalid id.")
+        }
         await Campground.findByIdAndRemove(id);
         res.redirect(`/campgrounds`)
     }));
@@ -37,31 +43,44 @@
     // Edit a Campground: 
     app.get('/campgrounds/:id/edit', wrapAsync(async (req, res, next) => {
         const { id } = req.params;
+        if (!id){
+            throw new generateError(400, "Missing/Invalid id.")
+        }
         const campground = await Campground.findById(id);
         campground?res.render("campgrounds/edit",{campground:campground}):res.send("Invalid request");
     }));
-    app.put("/campgrounds/:id", wrapAsync(
-        async (req, res, next) => {
+    app.put("/campgrounds/:id", wrapAsync(async (req, res, next) => {
             const { id } = req.params;
+            if (!id){
+                throw new generateError(400, "Missing/Invalid id.")
+            }
             await Campground.findByIdAndUpdate(id,req.body.campgrounds);
             res.redirect(`/campgrounds/${id}`)
     }));
 
     // Show Campground Details:
-    app.get('/campgrounds/:id',wrapAsync(
-        async (req, res, next) => {
+    app.get('/campgrounds/:id',wrapAsync(async (req, res, next) => {
             const {id} = req.params;
+            if (!id){
+                throw new generateError(400, "Missing/Invalid id.")
+            }
             const campground = await Campground.findById(id)
             res.render("campgrounds/show",{campground})
     }));
 
     // Show All Campgrounds:
-    app.get('/campgrounds',wrapAsync(
-        async (req, res, next) => {
+    app.get('/campgrounds',wrapAsync(async (req, res, next) => {
             const campground = await Campground.find({});
+            if (!campground) {
+                throw new generateError(404, "No Data found")
+            }
             res.render("campgrounds/index",{campgrounds:campground})
     }));
     
+    app.all("*", (req, res, next) => {
+        next( new generateError(404, "Page Not Found!"))
+    })
+
     // Error Handler Middleware
     app.use((err, req, res, next) => {
         const {status = 500, message = "Something went Wrong!"} = err;

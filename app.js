@@ -1,4 +1,4 @@
-((express, app, dotenv, path, mongoose, Campground, methodOverride, ejsMate, generateError, wrapAsync, joi) => {
+((express, app, dotenv, path, mongoose, Campground, methodOverride, ejsMate, generateError, wrapAsync, joi, {campgroundSchema}) => {
 
     mongoose.connect("mongodb://localhost:27017/lb-camp",);
     mongoose.connection.on("error", console.error.bind(console, "Connection Error"))
@@ -7,18 +7,17 @@
     app.engine('ejs', ejsMate);
     app.set("view engine", "ejs");
     app.set("views", path.join(__dirname,"views"));
-    
-    // Using JOI to setup a schema for campgrounds:
-    const campgroundSchema = joi.object({
-        campground: joi.object({
-            title: joi.string().required(),
-            price: joi.number().required().min(0),
-            image: joi.string().required(),
-            description: joi.string().required(),
-            location: joi.string().required()
-        }).required()
-    })
 
+    const validateCampground = (req, res, next) => {
+        const {error} = campgroundSchema.validate(req.body);
+        if(error){
+            const msg = error.details.map(el => el.message).join(",");
+            throw new generateError(400, msg)
+        }
+        else{
+            next();
+        }
+    }
     // Middlewares:
     app.use(methodOverride("_method"));
     app.use(express.urlencoded({extended: true}));
@@ -32,15 +31,10 @@
     app.get('/campgrounds/new', (req, res) => {
         res.render("campgrounds/new");
     });
-    app.post("/campgrounds", wrapAsync(async (req, res, next) => {
+    app.post("/campgrounds", validateCampground, wrapAsync(async (req, res, next) => {
       /*  if (!req.body.campgrounds){
            throw new generateError(400, "Missing/Invalid campgrounds Data.")
        }     */
-        const {error} = campgroundSchema.validate(req.body);
-        if(error){
-            const msg = error.details.message.map(el => el.message).join(",");
-            throw new generateError(400, msg)
-        }
         const camp = new Campground(req.body.campgrounds);
         await camp.save();
         res.redirect("/campgrounds");
@@ -65,7 +59,7 @@
         const campground = await Campground.findById(id);
         campground?res.render("campgrounds/edit",{campground:campground}):res.send("Invalid request");
     }));
-    app.put("/campgrounds/:id", wrapAsync(async (req, res, next) => {
+    app.put("/campgrounds/:id", validateCampground, wrapAsync(async (req, res, next) => {
             const { id } = req.params;
             if (!id){
                 throw new generateError(400, "Missing/Invalid id.")
@@ -119,5 +113,6 @@
     require('ejs-mate'),
     require('./utilities/generateError'),
     require('./utilities/wrapAsync'),
-    require('joi')
+    require('joi'),
+    require('./schemas')
 );

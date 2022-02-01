@@ -1,35 +1,48 @@
 <%- layout("/layouts/boilerplate") %> 
 <div class="row">
     <h1 class="text-center"> New Campground</h1>
-    <form action="/campgrounds" method="POST">
+    <form action="/campgrounds" method="POST" novalidate class="validated-form">
         <div class="mb-3">
             <label class="form-label" for="title">Title</label>
-            <input class="form-control" type = "text" id = "title" name = "campgrounds[title]">
+            <input class="form-control" type = "text" id = "title" name = "campgrounds[title]" required>
+            <div class="valid-feedback">
+                Looks good!
+            </div>
         </div>
         <div class="mb-3">
             <label class="form-label" for="location">Location</label>
-            <input class="form-control" type="text" id = "location" name = "campgrounds[location]">
-        </div>
+            <input class="form-control" type="text" id = "location" name = "campgrounds[location]" required>
+            <div class="valid-feedback">
+                Looks good!
+            </div>
         </div>
         <div class="mb-3">
             <label class="form-label" for="image">Image URL</label>
-            <input class="form-control" type="text" id = "image" name = "campgrounds[image]">
-        </div>
+            <input class="form-control" type="text" id = "image" name = "campgrounds[image]" required>
+            <div class="valid-feedback">
+                Looks good!
+            </div>
         </div>
         <div class="mb-3">
             <label class="form-label" for="price">Price</label>
             <div class="input-group">
                 <span class="input-group-text" id="basic-addon1">&#8377;</span>
-                <input type="text" id="price" name="campgrounds[price]" class="form-control" placeholder="0.00">
+                <input type="text" id="price" name="campgrounds[price]" class="form-control" placeholder="0.00" required>
+                <div class="valid-feedback">
+                Looks good!
+            </div>
               </div>
         </div>
         <div class="mb-3">
             <label class="form-label" for="description">Description</label>
-            <textarea class="form-control" type="text" id = "description" name = "campgrounds[description]"></textarea> 
+            <textarea class="form-control" type="text" id = "description" name = "campgrounds[description]" required></textarea>
+            <div class="valid-feedback">
+                Looks good!
+            </div>
         </div>
         <div class="my-3">
             <button class="btn btn-success w-100" >Add a campground</button>
         </div>
     </form>
-    <a class="btn btn-success" style="margin: auto;width:100%"href="/campgrounds">Back</a>   
+    <a class="btn btn-success" style="margin: auto;width:98.25%"href="/campgrounds">Back</a>   
 </div>

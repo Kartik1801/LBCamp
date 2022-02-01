@@ -83,8 +83,9 @@
 
     // Error Handler Middleware
     app.use((err, req, res, next) => {
-        const {status = 500, message = "Something went Wrong!"} = err;
-        res.status(status).send(message);
+        const {status = 500} = err;
+        if(!err.message) err.message = "Something went Wrong!"
+        res.status(status).render("errors",{err});
     });
 
     app.listen(process.env.PORT,() => {

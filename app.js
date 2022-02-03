@@ -1,4 +1,4 @@
-((express, app, dotenv, path, mongoose, Campground, methodOverride, ejsMate, generateError, wrapAsync, joi, {campgroundSchema}, Review) => {
+((express, app, dotenv, path, mongoose, Campground, methodOverride, ejsMate, generateError, wrapAsync, joi, {campgroundSchema, reviewSchema}, Review) => {
 
     mongoose.connect("mongodb://localhost:27017/lb-camp",);
     mongoose.connection.on("error", console.error.bind(console, "Connection Error"))
@@ -11,12 +11,21 @@
     const validateCampground = (req, res, next) => {
         const {error} = campgroundSchema.validate(req.body);
         if(error){
-            const msg = error.details.map(el => el.message).join(",");
-            throw new generateError(400, msg)
+            const msg = error.details.map( el => el.message).join(", ");
+            throw new generateError(400, msg);
         }
         else{
             next();
         }
+    }
+
+    const validateReviews = (req, res, next) => {
+        const {error} = reviewSchema.validate(req.body);
+        if(error){
+            const msg = error.details.map( el => el.message).join(', ');
+            throw new generateError(400, msg);
+        }
+        else next();
     }
     // Middlewares:
     app.use(methodOverride("_method"));
@@ -87,7 +96,8 @@
             res.render("campgrounds/index",{campgrounds:campground})
     }));
 
-    app.post("/campgrounds/:id/reviews", wrapAsync(async (req, res, next) => {
+    // Add Reviews:
+    app.post("/campgrounds/:id/reviews", validateReviews, wrapAsync(async (req, res, next) => {
         const {id} = req.params;
         if (!id){
             throw new generateError(400, "Missing/Invalid Id.")

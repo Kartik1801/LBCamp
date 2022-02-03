@@ -1,4 +1,4 @@
-((express, app, dotenv, path, mongoose, Campground, methodOverride, ejsMate, generateError, wrapAsync, joi, {campgroundSchema}) => {
+((express, app, dotenv, path, mongoose, Campground, methodOverride, ejsMate, generateError, wrapAsync, joi, {campgroundSchema}, Review) => {
 
     mongoose.connect("mongodb://localhost:27017/lb-camp",);
     mongoose.connection.on("error", console.error.bind(console, "Connection Error"))
@@ -72,7 +72,7 @@
     app.get('/campgrounds/:id',wrapAsync(async (req, res, next) => {
             const {id} = req.params;
             if (!id){
-                throw new generateError(400, "Missing/Invalid id.")
+                throw new generateError(400, "Missing/Invalid Id.")
             }
             const campground = await Campground.findById(id)
             res.render("campgrounds/show",{campground})
@@ -86,6 +86,20 @@
             }
             res.render("campgrounds/index",{campgrounds:campground})
     }));
+
+    app.post("/campgrounds/:id/reviews", wrapAsync(async (req, res, next) => {
+        const {id} = req.params;
+        if (!id){
+            throw new generateError(400, "Missing/Invalid Id.")
+        }
+        const campground = await Campground.findById(id);
+        const review = new Review(req.body.review);
+        campground.reviews.push(review);
+        console.log(campground);
+        await review.save();
+        await campground.save();
+        res.redirect(`/campgrounds/${campground._id}`)
+    }))
     
     app.all("*", (req, res, next) => {
         next( new generateError(404, "Page Not Found!"))
@@ -114,5 +128,6 @@
     require('./utilities/generateError'),
     require('./utilities/wrapAsync'),
     require('joi'),
-    require('./schemas')
+    require('./schemas'),
+    require('./models/review')
 );

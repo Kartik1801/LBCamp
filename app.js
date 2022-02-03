@@ -55,7 +55,7 @@
         if (!id){
             throw new generateError(400, "Missing/Invalid ID.")
         }
-        await Campground.findByIdAndRemove(id);
+        await Campground.findByIdAndDelete(id);
         res.redirect(`/campgrounds`)
     }));
     

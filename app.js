@@ -53,7 +53,7 @@
     app.delete("/campgrounds/:id", wrapAsync(async (req, res, next) => {
         const { id } = req.params;
         if (!id){
-            throw new generateError(400, "Missing/Invalid id.")
+            throw new generateError(400, "Missing/Invalid ID.")
         }
         await Campground.findByIdAndRemove(id);
         res.redirect(`/campgrounds`)
@@ -63,7 +63,7 @@
     app.get('/campgrounds/:id/edit', wrapAsync(async (req, res, next) => {
         const { id } = req.params;
         if (!id){
-            throw new generateError(400, "Missing/Invalid id.")
+            throw new generateError(400, "Missing/Invalid ID.")
         }
         const campground = await Campground.findById(id);
         campground?res.render("campgrounds/edit",{campground:campground}):res.send("Invalid request");
@@ -71,7 +71,7 @@
     app.put("/campgrounds/:id", validateCampground, wrapAsync(async (req, res, next) => {
             const { id } = req.params;
             if (!id){
-                throw new generateError(400, "Missing/Invalid id.")
+                throw new generateError(400, "Missing/Invalid ID.")
             }
             await Campground.findByIdAndUpdate(id,req.body.campgrounds);
             res.redirect(`/campgrounds/${id}`)
@@ -81,9 +81,9 @@
     app.get('/campgrounds/:id',wrapAsync(async (req, res, next) => {
             const {id} = req.params;
             if (!id){
-                throw new generateError(400, "Missing/Invalid Id.")
+                throw new generateError(400, "Missing/Invalid ID.")
             }
-            const campground = await Campground.findById(id)
+            const campground = await Campground.findById(id).populate("reviews")
             res.render("campgrounds/show",{campground})
     }));
 
@@ -111,6 +111,16 @@
         res.redirect(`/campgrounds/${campground._id}`)
     }))
     
+    app.delete("/campgrounds/:camp_id/reviews/:review_id", wrapAsync(async (req, res, next) => {
+       const {camp_id, review_id} = req.params;
+       if (!camp_id||!review_id) {
+            throw new generateError(400, "Missing/Invalid ID.")
+        }
+        await Campground.findByIdAndUpdate(camp_id, { $pull: {reviews: review_id}});
+        await Review.findByIdAndDelete(review_id);
+        res.redirect(`/campgrounds/${camp_id}`);
+    }))
+
     app.all("*", (req, res, next) => {
         next( new generateError(404, "Page Not Found!"))
     })

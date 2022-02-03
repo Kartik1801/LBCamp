@@ -15,7 +15,7 @@
 
     CampgroundSchema.post('findOneAndDelete', async function (camp){
         if(camp){
-            await Review.remove({
+            await Review.deleteMany({
                 _id: {
                     $in: camp.reviews
                 }

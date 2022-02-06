@@ -1,12 +1,11 @@
-((express, app, dotenv, path, mongoose, Campground, methodOverride, ejsMate, generateError, wrapAsync, joi, {campgroundSchema, reviewSchema}, Review) => {
-
+((express, app, dotenv, path, mongoose, Campground, methodOverride, ejsMate, generateError, wrapAsync, joi, {campgroundSchema, reviewSchema}, Review, campgrounds) => {
     mongoose.connect("mongodb://localhost:27017/lb-camp",);
     mongoose.connection.on("error", console.error.bind(console, "Connection Error"))
     mongoose.connection.once("open", () => console.log("Database Connected"));
-
     app.engine('ejs', ejsMate);
     app.set("view engine", "ejs");
     app.set("views", path.join(__dirname,"views"));
+    app.use('/campgrounds', campgrounds)
 
     const validateCampground = (req, res, next) => {
         const {error} = campgroundSchema.validate(req.body);
@@ -36,90 +35,7 @@
         res.render("home")
     });
 
-    // Add a new Campground: 
-    app.get('/campgrounds/new', (req, res) => {
-        res.render("campgrounds/new");
-    });
-    app.post("/campgrounds", validateCampground, wrapAsync(async (req, res, next) => {
-      /*  if (!req.body.campgrounds){
-           throw new generateError(400, "Missing/Invalid campgrounds Data.")
-       }     */
-        const camp = new Campground(req.body.campgrounds);
-        await camp.save();
-        res.redirect("/campgrounds");
-    }));
     
-    // Remove a Campground:
-    app.delete("/campgrounds/:id", wrapAsync(async (req, res, next) => {
-        const { id } = req.params;
-        if (!id){
-            throw new generateError(400, "Missing/Invalid ID.")
-        }
-        await Campground.findByIdAndDelete(id);
-        res.redirect(`/campgrounds`)
-    }));
-    
-    // Edit a Campground: 
-    app.get('/campgrounds/:id/edit', wrapAsync(async (req, res, next) => {
-        const { id } = req.params;
-        if (!id){
-            throw new generateError(400, "Missing/Invalid ID.")
-        }
-        const campground = await Campground.findById(id);
-        campground?res.render("campgrounds/edit",{campground:campground}):res.send("Invalid request");
-    }));
-    app.put("/campgrounds/:id", validateCampground, wrapAsync(async (req, res, next) => {
-            const { id } = req.params;
-            if (!id){
-                throw new generateError(400, "Missing/Invalid ID.")
-            }
-            await Campground.findByIdAndUpdate(id,req.body.campgrounds);
-            res.redirect(`/campgrounds/${id}`)
-    }));
-
-    // Show Campground Details:
-    app.get('/campgrounds/:id',wrapAsync(async (req, res, next) => {
-            const {id} = req.params;
-            if (!id){
-                throw new generateError(400, "Missing/Invalid ID.")
-            }
-            const campground = await Campground.findById(id).populate("reviews")
-            res.render("campgrounds/show",{campground})
-    }));
-
-    // Show All Campgrounds:
-    app.get('/campgrounds',wrapAsync(async (req, res, next) => {
-            const campground = await Campground.find({});
-            if (!campground) {
-                throw new generateError(404, "No Data found")
-            }
-            res.render("campgrounds/index",{campgrounds:campground})
-    }));
-
-    // Add Reviews:
-    app.post("/campgrounds/:id/reviews", validateReviews, wrapAsync(async (req, res, next) => {
-        const {id} = req.params;
-        if (!id){
-            throw new generateError(400, "Missing/Invalid Id.")
-        }
-        const campground = await Campground.findById(id);
-        const review = new Review(req.body.review);
-        campground.reviews.push(review);
-        console.log(campground);
-        await review.save();
-        await campground.save();
-        res.redirect(`/campgrounds/${campground._id}`)
-    }))
-    
-    app.delete("/campgrounds/:camp_id/reviews/:review_id", wrapAsync(async (req, res, next) => {
-       const {camp_id, review_id} = req.params;
-       if (!camp_id||!review_id) {
-            throw new generateError(400, "Missing/Invalid ID.")
-        }
-        await Campground.findByIdAndUpdate(camp_id, { $pull: {reviews: review_id}});
-        await Review.findByIdAndDelete(review_id);
-        res.redirect(`/campgrounds/${camp_id}`);
-    }))
 
     app.all("*", (req, res, next) => {
         next( new generateError(404, "Page Not Found!"))
@@ -149,5 +65,6 @@
     require('./utilities/wrapAsync'),
     require('joi'),
     require('./schemas'),
-    require('./models/review')
+    require('./models/review'),
+    require('./routes/campgrounds')
 );

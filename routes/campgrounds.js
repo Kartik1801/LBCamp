@@ -8,7 +8,6 @@
         }
         else next();
     }
-
 // Add a new Campground: 
     router.get('/new', (req, res) => {
         res.render("campgrounds/new");

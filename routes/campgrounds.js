@@ -1,4 +1,4 @@
-((express, router, generateError, wrapAsync, joi, {campgroundSchema, reviewSchema}, mongoose,  Campground) => {
+((express, router, generateError, wrapAsync, joi, {campgroundSchema}, mongoose,  Campground) => {
     const validateCampground = (req, res, next) => {
         const { error } = campgroundSchema.validate(req.body);
         if (error)

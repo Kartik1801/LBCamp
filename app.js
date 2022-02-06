@@ -6,14 +6,6 @@
     app.set("view engine", "ejs");
     app.set("views", path.join(__dirname,"views"));
     
-    const validateReviews = (req, res, next) => {
-        const {error} = reviewSchema.validate(req.body);
-        if(error){
-            const msg = error.details.map( el => el.message).join(', ');
-            throw new generateError(400, msg);
-        }
-        else next();
-    }
     // Middlewares:
     app.use(methodOverride("_method"));
     app.use(express.urlencoded({extended: true}));

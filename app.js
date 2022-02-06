@@ -5,19 +5,7 @@
     app.engine('ejs', ejsMate);
     app.set("view engine", "ejs");
     app.set("views", path.join(__dirname,"views"));
-    app.use('/campgrounds', campgrounds)
-
-    const validateCampground = (req, res, next) => {
-        const {error} = campgroundSchema.validate(req.body);
-        if(error){
-            const msg = error.details.map( el => el.message).join(", ");
-            throw new generateError(400, msg);
-        }
-        else{
-            next();
-        }
-    }
-
+    
     const validateReviews = (req, res, next) => {
         const {error} = reviewSchema.validate(req.body);
         if(error){
@@ -29,6 +17,7 @@
     // Middlewares:
     app.use(methodOverride("_method"));
     app.use(express.urlencoded({extended: true}));
+    app.use('/campgrounds', campgrounds)
     
     // Home Route:
     app.get('/', (req, res) => {

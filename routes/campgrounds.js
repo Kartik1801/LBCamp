@@ -24,7 +24,7 @@
         const { id } = req.params;
         if (!id) throw new generateError(400, "Missing/Invalid ID.")
         await Campground.findByIdAndDelete(id);
-        res.redirect(`/`)
+        res.redirect(`/campgrounds`)
     }));
 // Edit a Campground: 
     router.get('/:id/edit', wrapAsync(async (req, res, next) => {

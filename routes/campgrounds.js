@@ -16,7 +16,7 @@
         if (!req.body.campgrounds) throw new generateError(400, "Missing/Invalid campgrounds Data.");         
         const camp = new Campground(req.body.campgrounds);
         await camp.save();
-        req.flash("success", 'Successfully made a new Campground')
+        req.flash("success", 'Successfully Added a new Campground!');
         res.redirect("/campgrounds");
     }));    
 // Remove a Campground:
@@ -24,6 +24,7 @@
         const { id } = req.params;
         if (!id) throw new generateError(400, "Missing/Invalid ID.")
         await Campground.findByIdAndDelete(id);
+        req.flash("success", 'Successfully Deleted the Campground!');
         res.redirect(`/campgrounds`)
     }));
 // Edit a Campground: 
@@ -31,19 +32,35 @@
         const { id } = req.params;
         if (!id) throw new generateError(400, "Missing/Invalid ID.")
         const campground = await Campground.findById(id);
-        campground?res.render("campgrounds/edit",{campground:campground}):res.send("Invalid request");
+        if (!campground) 
+            {   
+                req.flash('error',"Campground not Found!")
+                return res.redirect("/campgrounds")
+            }    
+        res.render("campgrounds/edit",{campground:campground});
     }));
     router.put("/:id", validateCampground, wrapAsync(async (req, res, next) => {
             const { id } = req.params;
             if (!id) throw new generateError(400, "Missing/Invalid ID.")
-            await Campground.findByIdAndUpdate(id,req.body.campgrounds);
-            res.redirect(`/${id}`)
+            await Campground.findByIdAndUpdate(id,{...req.body.campgrounds});
+            if (!campground) 
+            {   
+                req.flash('error',"Campground not Found!")
+                return res.redirect("/campgrounds")
+            }    
+            req.flash("success", 'Successfully Updated the Campground!');
+            res.redirect(`/campgrounds/${id}`)
     }));
 // Show Campground Details:
     router.get('/:id',wrapAsync(async (req, res, next) => {
             const {id} = req.params;
             if (!id) throw new generateError(400, "Missing/Invalid ID.")
-            const campground = await Campground.findById(id).populate("reviews")
+            const campground = await Campground.findById(id).populate("reviews");
+            if (!campground) 
+            {   
+                req.flash('error',"Campground not Found!")
+                return res.redirect("/campgrounds")
+            }    
             res.render("campgrounds/show",{campground})
     }));
 // Show All Campgrounds:

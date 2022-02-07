@@ -17,6 +17,7 @@
         campground.reviews.push(review);
         await review.save();
         await campground.save();
+        req.flash("success", 'Successfully Created a Review!');
         res.redirect(`/campgrounds/${campground._id}`)
         }))
 //  Delete Review: 
@@ -25,6 +26,7 @@
             if (!id||!review_id) throw new generateError(400, "Missing/Invalid ID.")
             await Campground.findByIdAndUpdate(id, { $pull: {reviews: review_id}});
             await Review.findByIdAndDelete(review_id);
+            req.flash("success", 'Successfully Deleted the Review!');
             res.redirect(`/campgrounds/${id}`);
         }))
     module.exports = router

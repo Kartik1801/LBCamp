@@ -1,5 +1,5 @@
 ((express, router, generateError, wrapAsync, joi, {campgroundSchema}, mongoose,  Campground) => {
-    const validateCampground = (req, res, next) => {
+        const validateCampground = (req, res, next) => {
         const { error } = campgroundSchema.validate(req.body);
         if (error)
         {
@@ -16,7 +16,8 @@
         if (!req.body.campgrounds) throw new generateError(400, "Missing/Invalid campgrounds Data.");         
         const camp = new Campground(req.body.campgrounds);
         await camp.save();
-        res.redirect("/");
+        req.flash("success", 'Successfully made a new Campground')
+        res.redirect("/campgrounds");
     }));    
 // Remove a Campground:
     router.delete("/:id", wrapAsync(async (req, res, next) => {

@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Kartik1801/LBCamp#readme",
   "dependencies": {
+    "connect-flash": "^0.1.1",
     "dotenv": "^14.3.2",
     "ejs": "^3.1.6",
     "ejs-mate": "^3.0.0",

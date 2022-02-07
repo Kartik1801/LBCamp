@@ -1,4 +1,4 @@
-((express, router, generateError, wrapAsync, joi, {routerSchema}, mongoose, Campground, Review, campgroundsRouter) => {
+((express, router, generateError, wrapAsync, joi, {reviewSchema}, mongoose, Campground, Review, campgroundsRouter) => {
     const validateReviews = (req, res, next) => {
         const {error} = reviewSchema.validate(req.body);
         if(error){
@@ -8,8 +8,9 @@
         else next();
     }
 // Add Reviews:
-    app.post("/campgrounds/:id/reviews", validateReviews, wrapAsync(async (req, res, next) => {
-        const {id} = req.params;
+    router.post("/", validateReviews, wrapAsync(async (req, res, next) => {
+        const { id } = req.params;
+        console.log(req.params)
         if (!id) throw new generateError(400, "Missing/Invalid Id.")
         const campground = await Campground.findById(id);
         const review = new Review(req.body.review);
@@ -19,16 +20,17 @@
         res.redirect(`/campgrounds/${campground._id}`)
         }))
 //  Delete Review: 
-    app.delete("/campgrounds/:camp_id/reviews/:review_id", wrapAsync(async (req, res, next) => {
-            const {camp_id, review_id} = req.params;
-            if (!camp_id||!review_id) throw new generateError(400, "Missing/Invalid ID.")
-            await Campground.findByIdAndUpdate(camp_id, { $pull: {reviews: review_id}});
+    router.delete("/:review_id", wrapAsync(async (req, res, next) => {
+            const {id, review_id} = req.params;
+            if (!id||!review_id) throw new generateError(400, "Missing/Invalid ID.")
+            await Campground.findByIdAndUpdate(id, { $pull: {reviews: review_id}});
             await Review.findByIdAndDelete(review_id);
-            res.redirect(`/campgrounds/${camp_id}`);
+            res.redirect(`/campgrounds/${id}`);
         }))
+    module.exports = router
 })(
     require("express"),
-    require("express").Router(),
+    require("express").Router({mergeParams: true}),
     require('../utilities/generateError'),
     require('../utilities/wrapAsync'),
     require('joi'),

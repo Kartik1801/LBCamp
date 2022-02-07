@@ -1,4 +1,4 @@
-((express, app, dotenv, path, mongoose, Campground, methodOverride, ejsMate, generateError, wrapAsync, joi, {campgroundSchema, reviewSchema}, Review, campgrounds) => {
+((express, app, dotenv, path, mongoose, Campground, methodOverride, ejsMate, generateError, wrapAsync, joi, {campgroundSchema, reviewSchema}, Review, campgrounds, reviews) => {
     mongoose.connect("mongodb://localhost:27017/lb-camp",);
     mongoose.connection.on("error", console.error.bind(console, "Connection Error"))
     mongoose.connection.once("open", () => console.log("Database Connected"));
@@ -9,13 +9,13 @@
     // Middlewares:
     app.use(methodOverride("_method"));
     app.use(express.urlencoded({extended: true}));
-    app.use('/campgrounds', campgrounds)
+    app.use('/campgrounds', campgrounds);
+    app.use('/campgrounds/:id/reviews', reviews);
     
     // Home Route:
     app.get('/', (req, res) => {
         res.render("home")
     });
-
     
 
     app.all("*", (req, res, next) => {
@@ -47,5 +47,6 @@
     require('joi'),
     require('./schemas'),
     require('./models/review'),
-    require('./routes/campgrounds')
+    require('./routes/campgrounds'),
+    require('./routes/reviews')
 );

@@ -4,32 +4,26 @@
     mongoose.connection.once("open", () => console.log("Database Connected"));
     app.engine('ejs', ejsMate);
     app.set("view engine", "ejs");
-    app.set("views", path.join(__dirname, "views"));
-    
-    // Middlewares:
+    app.set("views", path.join(__dirname, "views"));    
+// Middlewares:
     app.use(methodOverride("_method"));
     app.use(express.urlencoded({extended: true}));
     app.use(express.static(path.join(__dirname, "public")));
     app.use('/campgrounds', campgrounds);
     app.use('/campgrounds/:id/reviews', reviews);
-    
-    // Home Route:
+// Home Route:
     app.get('/', (req, res) => {
         res.render("home")
     });
-    
-
     app.all("*", (req, res, next) => {
         next( new generateError(404, "Page Not Found!"))
     })
-
-    // Error Handler Middleware
+// Error Handler Middleware
     app.use((err, req, res, next) => {
         const {status = 500} = err;
         if(!err.message) err.message = "Something went Wrong!"
         res.status(status).render("errors",{err});
-    });
-
+    });s
     app.listen(process.env.PORT,() => {
         console.log(`Listening on Port ${process.env.PORT}`);
     });

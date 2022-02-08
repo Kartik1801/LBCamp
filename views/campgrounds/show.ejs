@@ -12,11 +12,13 @@
         <li class="list-group-item">Price: <%= campground.price?`Rs. ${campground.price.toString()}`:"FREE" %></li>
       </ul>
       <div class="card-body">
-        <a class ="btn btn-success" href="/campgrounds/<%= campground._id %>/edit">Edit Campground</a>
         <a class ="btn btn-secondary" href="/campgrounds">Show All Campgrounds</a>
-        <form style="display: inline;"action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
-          <button class="btn btn-danger">Delete campground</button>
-        </form>
+        <% if( currentUser && (currentUser._id).equals(campground.id)){ %> 
+          <a class ="btn btn-success" href="/campgrounds/<%= campground._id %>/edit">Edit Campground</a>
+          <form style="display: inline;"action="/campgrounds/<%= campground._id %>?_method=DELETE" method="POST">
+            <button class="btn btn-danger">Delete campground</button>
+          </form>
+          <% } %> 
       </div>
     </div>
   </div>

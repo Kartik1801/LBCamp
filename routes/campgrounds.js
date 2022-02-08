@@ -16,6 +16,7 @@
     router.post("/", isLoggedIn, validateCampground, wrapAsync(async (req, res, next) => {
         if (!req.body.campgrounds) throw new generateError(400, "Missing/Invalid campgrounds Data.");         
         const camp = new Campground(req.body.campgrounds);
+        camp.author = req.user._id;
         await camp.save();
         req.flash("success", 'Successfully Added a new Campground!');
         res.redirect("/campgrounds");
@@ -57,7 +58,6 @@
             const {id} = req.params;
             if (!id) throw new generateError(400, "Missing/Invalid ID.")
             const campground = await Campground.findById(id).populate("reviews").populate('author','username email');
-            console.log(campground);
             if (!campground) 
             {   
                 req.flash('error',"Campground not Found!")

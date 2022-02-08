@@ -1,12 +1,4 @@
-((express, router, generateError, wrapAsync, joi, {reviewSchema}, mongoose, Campground, Review, {isLoggedIn}) => {
-    const validateReviews = (req, res, next) => {
-        const {error} = reviewSchema.validate(req.body);
-        if(error){
-            const msg = error.details.map( el => el.message).join(', ');
-            throw new generateError(400, msg);
-        }
-        else next();
-    }
+((express, router, generateError, wrapAsync, joi, {reviewSchema}, mongoose, Campground, Review, {isLoggedIn, validateReviews}) => {
 // Add Reviews:
     router.get('/', (req, res) => {
         res.redirect(`/campgrounds/${req.params.id}`)

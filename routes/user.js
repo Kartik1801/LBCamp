@@ -8,13 +8,16 @@
                 const { user:userData } = req.body;
                 const user = new User({username: userData.username, email: userData.email});
                 const registeredUser = await User.register(user, userData.password);
+                req.login(registeredUser, err => {
+                    if (err) return next(err);
+                    req.flash('success',"Welcome to LBCamp!")
+                    res.redirect("/campgrounds");
+                });
             }
         catch(e){
                 req.flash("error", e.message);
                 return res.redirect("/register");
             }
-        req.flash('success',"Welcome to LBCamp!")
-        res.redirect("/campgrounds");
     }))
 
     router.get('/login', (req, res) => {
@@ -22,9 +25,15 @@
     })
     router.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: "/login" }), wrapAsync(async (req, res) => {
         req.flash('success',"Welcome Back!")
-        res.redirect("/campgrounds");
+        const redirect = req.session.returnTo || "/campgrounds";
+        delete req.session.returnTo
+        res.redirect(redirect);
     }))
-
+    router.get('/logout', (req, res) => {
+        req.logOut();
+        req.flash("success", 'See You Again!');
+        res.redirect("/campgrounds");
+    })
     module.exports = router;
 })(
     require("express"),

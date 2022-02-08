@@ -56,7 +56,8 @@
     router.get('/:id', wrapAsync(async (req, res, next) => {
             const {id} = req.params;
             if (!id) throw new generateError(400, "Missing/Invalid ID.")
-            const campground = await Campground.findById(id).populate("reviews");
+            const campground = await Campground.findById(id).populate("reviews").populate('author','username');
+            console.log(campground);
             if (!campground) 
             {   
                 req.flash('error',"Campground not Found!")

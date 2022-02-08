@@ -5,6 +5,10 @@
         image: String,
         description: String,
         location: String,
+        author: {
+            type: Schema.Types.ObjectId,
+            ref: "User"
+        },
         reviews: [
             {
                 type: Schema.Types.ObjectId, 
@@ -12,7 +16,6 @@
             }
         ]
     })
-
     CampgroundSchema.post('findOneAndDelete', async function (camp){
         if(camp){
             await Review.deleteMany({
@@ -22,7 +25,6 @@
             })
         }
     })
-
     const Campground =  mongoose.model('Campground',CampgroundSchema)
     module.exports = Campground;
 })(

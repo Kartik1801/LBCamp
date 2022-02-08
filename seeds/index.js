@@ -10,6 +10,7 @@
         for ( let i = 0; i < 50; i++){
             const random = Math.floor( Math.random() * 1000);
             const camp = new Campground({
+                author: "62023e4d2f86d8883adb2717",
                 title: `${sample(descriptors)} ${sample(places)} `,
                 location: ` ${citiesArray[random].city}, ${ citiesArray[random].state}`,
                 price: Math.round(Math.random() * 5000),

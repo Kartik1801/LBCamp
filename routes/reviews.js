@@ -8,6 +8,9 @@
         else next();
     }
 // Add Reviews:
+    router.get('/', (req, res) => {
+        res.redirect(`/campgrounds/${req.params.id}`)
+    })
     router.post("/", isLoggedIn, validateReviews, wrapAsync(async (req, res, next) => {
         const { id } = req.params;
         if (!id) throw new generateError(400, "Missing/Invalid Id.")

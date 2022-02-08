@@ -1,4 +1,4 @@
-((express, router, generateError, wrapAsync, joi, {reviewSchema}, mongoose, Campground, Review, campgroundsRouter) => {
+((express, router, generateError, wrapAsync, joi, {reviewSchema}, mongoose, Campground, Review, {isLoggedIn}) => {
     const validateReviews = (req, res, next) => {
         const {error} = reviewSchema.validate(req.body);
         if(error){
@@ -8,9 +8,8 @@
         else next();
     }
 // Add Reviews:
-    router.post("/", validateReviews, wrapAsync(async (req, res, next) => {
+    router.post("/", isLoggedIn, validateReviews, wrapAsync(async (req, res, next) => {
         const { id } = req.params;
-        console.log(req.params)
         if (!id) throw new generateError(400, "Missing/Invalid Id.")
         const campground = await Campground.findById(id);
         const review = new Review(req.body.review);
@@ -21,7 +20,7 @@
         res.redirect(`/campgrounds/${campground._id}`)
         }))
 //  Delete Review: 
-    router.delete("/:review_id", wrapAsync(async (req, res, next) => {
+    router.delete("/:review_id", isLoggedIn, wrapAsync(async (req, res, next) => {
             const {id, review_id} = req.params;
             if (!id||!review_id) throw new generateError(400, "Missing/Invalid ID.")
             await Campground.findByIdAndUpdate(id, { $pull: {reviews: review_id}});
@@ -40,6 +39,6 @@
     require('mongoose'),
     require('../models/campground'),
     require('../models/review'),
-    require('./campgrounds')
+    require('../middleware')
 )
 

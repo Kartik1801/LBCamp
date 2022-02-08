@@ -1,4 +1,4 @@
-((express, app, dotenv, path, mongoose, methodOverride, ejsMate, generateError, campgrounds, reviews, session, flash) => {
+((express, app, dotenv, path, mongoose, methodOverride, ejsMate, generateError, campgroundRoutes, reviewRoutes, session, flash, passport, passportLocal, User, userRoutes) => {
     mongoose.connect("mongodb://localhost:27017/lb-camp",);
     mongoose.connection.on("error", console.error.bind(console, "Connection Error"))
     mongoose.connection.once("open", () => console.log("Database Connected"));
@@ -6,6 +6,7 @@
     app.engine('ejs', ejsMate);
     app.set("view engine", "ejs");
     app.set("views", path.join(__dirname, "views"));    
+
     app.use(methodOverride("_method"));
     app.use(express.urlencoded({extended: true}));
     app.use(express.static(path.join(__dirname, "public")));
@@ -22,15 +23,23 @@
     app.use(session(sessionConfig));
     app.use(flash());
 
+    app.use(passport.initialize());
+    app.use(passport.session());
+    passport.use( new passportLocal( User.authenticate()));
+   
+    passport.serializeUser( User.serializeUser());
+    passport.deserializeUser( User.deserializeUser());
+
     app.use((req, res, next) => {
         res.locals.success = req.flash('success');
         res.locals.error = req.flash('error');
         next();
     });
 // Routers:
-    app.use('/campgrounds', campgrounds);
-    app.use('/campgrounds/:id/reviews', reviews);
-    // Home Route:
+    app.use('/campgrounds', campgroundRoutes);
+    app.use('/campgrounds/:id/reviews', reviewRoutes);
+    app.use('/', userRoutes)
+// Home Route:
     app.get('/', (req, res) => {
         res.render("home")
     });
@@ -59,5 +68,9 @@
     require('./routes/campgrounds'),
     require('./routes/reviews'),
     require('express-session'),
-    require('connect-flash')
+    require('connect-flash'),
+    require('passport'),
+    require('passport-local'),
+    require('./models/user'),
+    require('./routes/user')
 );

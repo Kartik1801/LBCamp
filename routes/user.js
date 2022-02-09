@@ -1,12 +1,12 @@
 ((router, wrapAsync, passport, user) => {
     
-    router.get('/register', user.redirectToRegister)
-    
-    router.post('/register',wrapAsync(user.registerUser))
+    router.route('/register')
+        .get(user.redirectToRegister)
+        .post(wrapAsync(user.registerUser))
 
-    router.get('/login', user.redirectToLogin)
-    
-    router.post('/login', passport.authenticate('local', {failureFlash: true, failureRedirect: "/login"}), wrapAsync(user.logUserIn))
+    router.route('/login')
+        .get(user.redirectToLogin)
+        .post(passport.authenticate('local', {failureFlash: true, failureRedirect: "/login"}), wrapAsync(user.logUserIn))
     
     router.get('/logout', user.logUserOut)
     

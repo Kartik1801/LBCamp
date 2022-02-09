@@ -1,12 +1,12 @@
 ((router, wrapAsync, {isLoggedIn, validateReviews, isReviewAuthor}, review) => {
 
-    router.get('/', review.redirectToCampground)
+    router.route('/')
+        .get(review.redirectToCampground)
+        .post(isLoggedIn, validateReviews, wrapAsync(review.createReview));
     
-    router.post("/", isLoggedIn, validateReviews, wrapAsync(review.createReview))
-    
-    router.get('/:review_id', review.redirectToCampground)
-
-    router.delete("/:review_id", isLoggedIn, isReviewAuthor,wrapAsync(review.deleteReview))
+    router.route('/:review_id')
+        .get(review.redirectToCampground)
+        .delete(isLoggedIn, isReviewAuthor,wrapAsync(review.deleteReview));
     
     module.exports = router
 })(

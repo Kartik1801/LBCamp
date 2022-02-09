@@ -1,6 +1,5 @@
 ((express, router, generateError, wrapAsync, joi, {campgroundSchema}, mongoose,  Campground, {isLoggedIn, isAuthor, validateCampground}) => {
-
-    // Add a new Campground: 
+// Add a new Campground: 
     router.get('/new', isLoggedIn, (req, res) => {
         res.render("campgrounds/new");
     });
@@ -48,7 +47,12 @@
     router.get('/:id', wrapAsync(async (req, res, next) => {
             const {id} = req.params;
             if (!id) throw new generateError(400, "Missing/Invalid ID.")
-            const campground = await Campground.findById(id).populate("reviews").populate('author','username email');
+            const campground = await Campground.findById(id).populate({
+                 path:"reviews",
+                 populate: { 
+                     path: "author"
+                    }
+                }).populate('author','username email');
             if (!campground) 
             {   
                 req.flash('error',"Campground not Found!")

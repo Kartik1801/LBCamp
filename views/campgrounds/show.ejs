@@ -23,30 +23,35 @@
     </div>
   </div>
   <div class="col-6">
-    <h2>Leave a Review</h2>
-    <form action="/campgrounds/<%= campground._id %>/reviews" class="mb-3 validated-form" method="post" novalidate >
-      <div class="mb-3">
-        <label for="rating" class="form-label">Rating</label>
-        <input type="range" class="form-range" min="1" max="5"name="review[rating]" id="rating">
-      </div>
-      <div class="mb-3">
-        <label class="form-label" for="body">Review</label>
-        <textarea class= "form-control" name="review[body]" id="body" cols="30" rows="3" required></textarea>
-        <div class="valid-feedback">
-          Looks good!
-        </div>
-      </div>
-      <button class="btn btn-success">Submit</button>      
-    </form>
     <div>
+     <% if(currentUser){ %>
+        <h2>Leave a Review</h2>
+        <form action="/campgrounds/<%= campground._id %>/reviews" class="mb-3 validated-form" method="post" novalidate >
+        <div class="mb-3">
+          <label for="rating" class="form-label">Rating</label>
+          <input type="range" class="form-range" min="1" max="5"name="review[rating]" id="rating">
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="body">Review</label>
+          <textarea class= "form-control" name="review[body]" id="body" cols="30" rows="3" required></textarea>
+          <div class="valid-feedback">
+            Looks good!
+          </div>
+        </div>
+        <button class="btn btn-success">Submit</button>      
+      </form>
+     <% } %> 
       <h2>Reviews:</h2>
       <% for (let reviews of campground.reviews){ %>
        <div class="card mb-2">
-         <div class="card-body">
-            <h5 class="card-title">Rating: <%= reviews.rating %> Stars</h5>
+         <div class="card-body"> 
+           <h5 class="card-title">Rating: <%= reviews.rating %> Stars</h5>
+           <div class="card--subtitle mb-2 text-muted"><small><% if (reviews.author) {%>By <%= reviews.author.username %><% } %></small></div>
             <p class="card-text"><%= reviews.body %></p> 
-            <form action="/campgrounds/<%= campground._id %>/reviews/<%= reviews._id%>?_method=DELETE" method="POST"><button class="btn btn-sm btn-danger">Delete</button></form>
-         </div>  
+            <% if( currentUser && reviews.author && (reviews.author._id).equals(currentUser._id)){ %>
+              <form action="/campgrounds/<%= campground._id %>/reviews/<%= reviews._id%>?_method=DELETE" method="POST"><button class="btn btn-sm btn-danger">Delete</button></form>
+            <% } %> 
+          </div>  
        </div>
       <% } %>  
     </div>

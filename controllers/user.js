@@ -1,4 +1,4 @@
-((User, ) => {
+((User) => {
 
     module.exports.redirectToRegister = (req, res) => {
             res.render("users/register");

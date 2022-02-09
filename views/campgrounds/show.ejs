@@ -1,4 +1,5 @@
 <%- layout("/layouts/boilerplate") %> 
+<link rel="stylesheet" href="/styles/star.css">
 <div class="row ">
   <div class="col-6">
     <div class="card mb-3">
@@ -45,8 +46,8 @@
       <% for (let reviews of campground.reviews){ %>
        <div class="card mb-2">
          <div class="card-body"> 
-           <h5 class="card-title">Rating: <%= reviews.rating %> Stars</h5>
-           <div class="card--subtitle mb-2 text-muted"><small><% if (reviews.author) {%>By <%= reviews.author.username %><% } %></small></div>
+           <h5 class="card-title mb-2"><% if (reviews.author) {%><%= reviews.author.username.replace(/\w/, c => c.toUpperCase()) %><% } %></h5>
+           <p class="starability-result" data-rating = "<%= reviews.rating %>"></p>
             <p class="card-text"><%= reviews.body %></p>
             <% if( currentUser && reviews.author && (reviews.author._id).equals(currentUser._id)){ %>
               <form action="/campgrounds/<%= campground._id %>/reviews/<%= reviews._id%>?_method=DELETE" method="POST"><button class="btn btn-sm btn-danger">Delete</button></form>

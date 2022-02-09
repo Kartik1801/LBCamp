@@ -28,6 +28,15 @@ module.exports.isAuthor = async (req, res, next) => {
         }
         return next();    
     }
+module.exports.isReviewAuthor = async (req, res, next) => {
+        const { review_id, id } = req.params;
+        const review = await Review.findById(review_id);
+        if(!review.author._id.equals(req.user.id)){
+            req.flash('error',"You dont have permission to edit!")
+            return res.redirect(`/campgrounds/${ id }`)
+        }
+        return next();    
+    }
 module.exports.validateReviews = (req, res, next) => {
     const {error} = reviewSchema.validate(req.body);
     if(error){

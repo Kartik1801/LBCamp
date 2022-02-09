@@ -15,6 +15,7 @@
     router.delete('/:id', isLoggedIn, isAuthor, wrapAsync(campground.deleteCampground));
     
     module.exports = router;
+    
 })(
     require("express").Router(),
     require('../utilities/wrapAsync'),

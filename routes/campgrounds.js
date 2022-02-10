@@ -1,7 +1,6 @@
-((router, wrapAsync,  {isLoggedIn, isAuthor, validateCampground}, campground, multer, cloudinary) => {
-    
-    const cl = new cloudinary.Cloudinary({cloud_name: "dgj3fg9in", secure: true});
-    const upload = multer({ dest: "uploads/"});
+((router, wrapAsync,  {isLoggedIn, isAuthor, validateCampground}, campground, multer, {cloudinary, storage}) => {
+
+    const upload = multer({ storage });
     router.route('/')
         .get(wrapAsync(campground.index))
       /*   .post(isLoggedIn, validateCampground, wrapAsync(campground.createCampground)); */
@@ -26,5 +25,5 @@
     require('../middleware'),
     require('../controllers/campgrounds'),
     require('multer'),
-    require('cloudinary-core')
+    require('../cloudinary/index')
 )

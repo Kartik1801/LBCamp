@@ -1,4 +1,7 @@
-((express, app, dotenv, path, mongoose, methodOverride, ejsMate, generateError, campgroundRoutes, reviewRoutes, session, flash, passport, passportLocal, User, userRoutes) => {
+((express, app, path, mongoose, methodOverride, ejsMate, generateError, campgroundRoutes, reviewRoutes, session, flash, passport, passportLocal, User, userRoutes) => {
+    if(process.env.NODE_ENV !== 'production'){
+        require('dotenv').config()
+    }
     mongoose.connect("mongodb://localhost:27017/lb-camp",);
     mongoose.connection.on("error", console.error.bind(console, "Connection Error"))
     mongoose.connection.once("open", () => console.log("Database Connected"));
@@ -60,7 +63,6 @@
 (
     require('express'),
     require('express')(), 
-    require('dotenv').config(),
     require("path"),
     require('mongoose'),
     require('method-override'),

@@ -26,5 +26,5 @@
     require('../middleware'),
     require('../controllers/campgrounds'),
     require('multer'),
-    require('cloudinary')
+    require('cloudinary-core')
 )

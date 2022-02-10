@@ -13,8 +13,10 @@
     module.exports.createCampground = async (req, res, next) => {
             if (!req.body.campgrounds) throw new generateError(400, "Missing/Invalid campgrounds Data.");         
             const camp = new Campground(req.body.campgrounds);
+            camp.images = req.files.map(f => ({ url: f.path, filename: f.filename }))
             camp.author = req.user._id;
             await camp.save();
+            console.log(camp)
             req.flash("success", 'Successfully Added a new Campground!');
             res.redirect("/campgrounds");
     }

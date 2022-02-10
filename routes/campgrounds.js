@@ -1,8 +1,13 @@
-((router, wrapAsync,  {isLoggedIn, isAuthor, validateCampground}, campground ) => {
+((router, wrapAsync,  {isLoggedIn, isAuthor, validateCampground}, campground, multer) => {
     
+    const upload = multer({ dest: "uploads/"});
     router.route('/')
         .get(wrapAsync(campground.index))
-        .post(isLoggedIn, validateCampground, wrapAsync(campground.createCampground));
+      /*   .post(isLoggedIn, validateCampground, wrapAsync(campground.createCampground)); */
+        .post( upload.array('image'), (req, res) => {
+            console.log(req.body, req.files);
+            res.send("OK")
+        })
 
     router.get('/new', isLoggedIn, campground.renderNewForm);
     router.route('/:id')
@@ -18,5 +23,6 @@
     require("express").Router(),
     require('../utilities/wrapAsync'),
     require('../middleware'),
-    require('../controllers/campgrounds')
+    require('../controllers/campgrounds'),
+    require('multer')
 )

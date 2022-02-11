@@ -45,6 +45,9 @@
             const { id } = req.params;
             if (!id) throw new generateError(400, "Missing/Invalid ID.")
             const campground = await Campground.findByIdAndUpdate(id,{...req.body.campgrounds})
+            const imgs = req.files.map(f => ({ url: f.path, filename: f.filename }))
+            campground.images.push(...imgs);
+            await campground.save()
             if (!campground) 
             {   
                 req.flash('error',"Campground not Found!")

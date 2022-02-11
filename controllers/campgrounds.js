@@ -1,4 +1,4 @@
-((Campground, generateError) => {
+((Campground, generateError, {cloudinary}) => {
 
     module.exports.index = async (req, res, next) => {
             const campground = await Campground.find({});
@@ -45,18 +45,21 @@
             const { id } = req.params;
             if (!id) throw new generateError(400, "Missing/Invalid ID.")
             const campground = await Campground.findByIdAndUpdate(id,{...req.body.campgrounds})
-            const imgs = req.files.map(f => ({ url: f.path, filename: f.filename }))
-            campground.images.push(...imgs);
-            await campground.save()
-            if(req.body.deleteImages)
-            {
-               await campground.updateOne({$pull: { images: { filename: {$in: req.body.deleteImages }}}})
-            }
             if (!campground) 
             {   
                 req.flash('error',"Campground not Found!")
                 return res.redirect("/campgrounds")
             }           
+            const imgs = req.files.map(f => ({ url: f.path, filename: f.filename }))
+            campground.images.push(...imgs);
+            await campground.save()
+            if(req.body.deleteImages)
+            {
+                for(let filename of req.body.deleteImages){
+                    await cloudinary.uploader.destroy(filename)
+                }
+                await campground.updateOne({$pull: { images: { filename: {$in: req.body.deleteImages }}}})
+            }
             req.flash("success", 'Successfully Updated the Campground!');
             res.redirect(`/campgrounds/${id}`);
     }
@@ -79,5 +82,6 @@
     }
 })(
     require('../models/campground'),
-    require('../utilities/generateError')
+    require('../utilities/generateError'),
+    require('../cloudinary/index')
 )

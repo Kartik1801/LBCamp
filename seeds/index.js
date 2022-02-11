@@ -14,7 +14,15 @@
                 title: `${sample(descriptors)} ${sample(places)} `,
                 location: ` ${citiesArray[random].city}, ${ citiesArray[random].state}`,
                 price: Math.round(Math.random() * 5000),
-                image: `https://source.unsplash.com/collection/483251`,
+                images: [{
+                        url: 'https://res.cloudinary.com/dgj3fg9in/image/upload/v1644519237/LBCamp/dhsoqcxt8l1xemo6ensz.jpg',
+                        filename: 'LBCamp/dhsoqcxt8l1xemo6ensz',
+                    },
+                    {
+                        url: 'https://res.cloudinary.com/dgj3fg9in/image/upload/v1644519240/LBCamp/psggtu2vhs3x47lpkrtn.jpg',
+                        filename: 'LBCamp/psggtu2vhs3x47lpkrtn',
+                    }
+                ],
                 description: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor impedit facere dolores, corporis accusamus sed sunt est exercitationem! Sit voluptate sapiente delectus tempora recusandae soluta at hic libero odio aut.`
             }
             );

@@ -1,4 +1,9 @@
-((Campground, generateError, {cloudinary}) => {
+((Campground, generateError, {cloudinary}, mbxGeocoding) => {
+    if(process.env.NODE_ENV !== 'production'){
+        require('dotenv').config()
+    }
+    const mapboxToken = process.env.MAP_TOKEN;
+    const geocoder = mbxGeocoding({ accessToken: mapboxToken })
 
     module.exports.index = async (req, res, next) => {
             const campground = await Campground.find({});
@@ -11,13 +16,18 @@
     }
     
     module.exports.createCampground = async (req, res, next) => {
-            if (!req.body.campgrounds) throw new generateError(400, "Missing/Invalid campgrounds Data.");         
+           const geodata =  await geocoder.forwardGeocode({
+                query: req.body.campgrounds.location,
+                limit: 1
+            }).send()
+            res.send(geodata.body.features[0].geometry.coordinates)
+            /* if (!req.body.campgrounds) throw new generateError(400, "Missing/Invalid campgrounds Data.");         
             const camp = new Campground(req.body.campgrounds);
             camp.images = req.files.map(f => ({ url: f.path, filename: f.filename }))
             camp.author = req.user._id;
             await camp.save();
             req.flash("success", 'Successfully Added a new Campground!');
-            res.redirect("/campgrounds");
+            res.redirect("/campgrounds"); */
     }
     
     module.exports.deleteCampground = async (req, res, next) => {
@@ -82,5 +92,6 @@
 })(
     require('../models/campground'),
     require('../utilities/generateError'),
-    require('../cloudinary/index')
+    require('../cloudinary/index'),
+    require('@mapbox/mapbox-sdk/services/geocoding')
 )

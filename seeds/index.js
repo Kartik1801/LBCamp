@@ -14,6 +14,10 @@
                 title: `${sample(descriptors)} ${sample(places)} `,
                 location: ` ${citiesArray[random].city}, ${ citiesArray[random].state}`,
                 price: Math.round(Math.random() * 5000),
+                geometry:{
+                    coordinates: [138.82, 35.49],
+                    type: "Point"
+                },
                 images: [{
                         url: 'https://res.cloudinary.com/dgj3fg9in/image/upload/v1644519237/LBCamp/dhsoqcxt8l1xemo6ensz.jpg',
                         filename: 'LBCamp/dhsoqcxt8l1xemo6ensz',

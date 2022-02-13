@@ -7,7 +7,7 @@
     const sample = array => array[Math.floor( Math.random() * array.length)]
     const seedDB = async () => {
         await Campground.deleteMany({});
-        for ( let i = 0; i < 50; i++){
+        for ( let i = 0; i < 500; i++){
             const random = Math.floor( Math.random() * 1000);
             const camp = new Campground({
                 author: "62023e4d2f86d8883adb2717",

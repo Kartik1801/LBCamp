@@ -16,18 +16,18 @@
     }
     
     module.exports.createCampground = async (req, res, next) => {
-           const geodata =  await geocoder.forwardGeocode({
-                query: req.body.campgrounds.location,
-                limit: 1
-            }).send()
-            res.send(geodata.body.features[0].geometry.coordinates)
-            /* if (!req.body.campgrounds) throw new generateError(400, "Missing/Invalid campgrounds Data.");         
+            if (!req.body.campgrounds) throw new generateError(400, "Missing/Invalid campgrounds Data.");         
             const camp = new Campground(req.body.campgrounds);
+            const geodata =  await geocoder.forwardGeocode({
+                    query: req.body.campgrounds.location,
+                    limit: 1
+                }).send()
+            camp.geometry = geodata.body.features[0].geometry
             camp.images = req.files.map(f => ({ url: f.path, filename: f.filename }))
             camp.author = req.user._id;
             await camp.save();
             req.flash("success", 'Successfully Added a new Campground!');
-            res.redirect("/campgrounds"); */
+            res.redirect("/campgrounds");
     }
     
     module.exports.deleteCampground = async (req, res, next) => {

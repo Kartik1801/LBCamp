@@ -18,10 +18,10 @@
                 enum: ['Point'],
                 required: true
             },
-            coordinates: {
+            coordinates: [{
                 type: Number,
                 required: true
-            }
+            }]
         },
         description: String,
         location: String,

@@ -15,7 +15,10 @@
                 location: ` ${citiesArray[random].city}, ${ citiesArray[random].state}`,
                 price: Math.round(Math.random() * 5000),
                 geometry:{
-                    coordinates: [138.82, 35.49],
+                    coordinates: [
+                        citiesArray[random].longitude, 
+                        citiesArray[random].latitude
+                    ],
                     type: "Point"
                 },
                 images: [{

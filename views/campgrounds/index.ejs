@@ -8,11 +8,11 @@
         <% for (let campground of campgrounds){ %>
             <div class="card mb-3">
                 <div class="row">
-                    <div class="col-md-4 m-auto">
+                    <div class="col-md-4">
                         <% if(campground.images.length){ %> 
-                        <img  src="<%= campground.images[0].url %>" alt="" class="img-fluid">
+                        <img  src="<%= campground.images[0].url %>" alt="" class="img-fluid w-100 h-100">
                         <% }else{ %>
-                        <img  src="https://res.cloudinary.com/dgj3fg9in/image/upload/v1644776528/LBCamp/u0n8qas7vs6tulxzojp1.jpg" alt="" class="img-fluid">
+                        <img  src="https://res.cloudinary.com/dgj3fg9in/image/upload/v1644776528/LBCamp/u0n8qas7vs6tulxzojp1.jpg" alt="" class="img-fluid w-100 h-100">
                         <% } %>  
                     </div>
                     <div class="col-md-8">

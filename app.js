@@ -1,4 +1,4 @@
-((express, app, path, mongoose, methodOverride, ejsMate, generateError, campgroundRoutes, reviewRoutes, session, flash, passport,passportLocal, User, userRoutes, expressMongoSanitize) => {
+((express, app, path, mongoose, methodOverride, ejsMate, generateError, campgroundRoutes, reviewRoutes, session, flash, passport, passportLocal, User, userRoutes, expressMongoSanitize, helmet) => {
     if(process.env.NODE_ENV !== 'production'){
         require('dotenv').config()
     }
@@ -13,14 +13,13 @@
     app.use(methodOverride("_method"));
     app.use(express.urlencoded({extended: true}));
     app.use(express.static(path.join(__dirname, "public")));
+    
     const sessionConfig = {
-        name: 'session',
         secret: "secret",
         resave: false,
         saveUninitialized: false,
         cookie:{
             httpOnly: true,
-            // secure: true,
             expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
             maxAge: 1000 * 60 * 60 * 24 * 7
         }
@@ -78,5 +77,6 @@
     require('passport-local'),
     require('./models/user'),
     require('./routes/user'),
-    require('express-mongo-sanitize')
+    require('express-mongo-sanitize'),
+    require('helmet')
 );

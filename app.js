@@ -1,4 +1,4 @@
-((express, app, path, mongoose, methodOverride, ejsMate, generateError, campgroundRoutes, reviewRoutes, session, flash, passport, passportLocal, User, userRoutes) => {
+((express, app, path, mongoose, methodOverride, ejsMate, generateError, campgroundRoutes, reviewRoutes, session, flash, passport,passportLocal, User, userRoutes, expressMongoSanitize) => {
     if(process.env.NODE_ENV !== 'production'){
         require('dotenv').config()
     }
@@ -9,7 +9,7 @@
     app.engine('ejs', ejsMate);
     app.set("view engine", "ejs");
     app.set("views", path.join(__dirname, "views"));    
-
+    app.use(expressMongoSanitize())
     app.use(methodOverride("_method"));
     app.use(express.urlencoded({extended: true}));
     app.use(express.static(path.join(__dirname, "public")));
@@ -75,5 +75,6 @@
     require('passport'),
     require('passport-local'),
     require('./models/user'),
-    require('./routes/user')
+    require('./routes/user'),
+    require('express-mongo-sanitize')
 );

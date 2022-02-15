@@ -14,11 +14,13 @@
     app.use(express.urlencoded({extended: true}));
     app.use(express.static(path.join(__dirname, "public")));
     const sessionConfig = {
+        name: 'session',
         secret: "secret",
         resave: false,
         saveUninitialized: false,
         cookie:{
             httpOnly: true,
+            // secure: true,
             expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
             maxAge: 1000 * 60 * 60 * 24 * 7
         }

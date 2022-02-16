@@ -1,10 +1,56 @@
-((express, app, path, mongoose, methodOverride, ejsMate, generateError, campgroundRoutes, reviewRoutes, session, flash, passport, passportLocal, User, userRoutes, expressMongoSanitize, helmet, ) => {
-    if(process.env.NODE_ENV !== 'production'){
-        require('dotenv').config()
+((express, app, path, mongoose, methodOverride, ejsMate, generateError, campgroundRoutes, reviewRoutes, 
+    session, flash, passport, passportLocal, User, userRoutes, expressMongoSanitize, helmet ) => {
+        // MAKE SURE TO ENCODE YOUR DB_URL IF YOUR CREDENTIALS CONTAINS SPECIAL CHARACTERS
+        const dburl = /* process.env.DB_URL || */ 'mongodb://localhost:27017/lb-camp';
+        const MongoDBStore = require("connect-mongo")
+        const store = MongoDBStore.create({
+            mongoUrl: dburl,
+            secret: 'secret',
+            touchAfter: 24 * 60 * 60  
+        })
+        store.on("error", function(e){
+            console.log(e);
+        })
+        const sessionConfig = {
+            store,
+            secret: "secret",
+            resave: false,
+            saveUninitialized: false,
+            cookie:{
+                httpOnly: true,
+                expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+                maxAge: 1000 * 60 * 60 * 24 * 7
+            }
+        }
+        const scriptSrcUrls = [
+            "https://stackpath.bootstrapcdn.com/",
+            "https://api.tiles.mapbox.com/",
+            "https://api.mapbox.com/",
+            "https://kit.fontawesome.com/",
+            "https://cdnjs.cloudflare.com/",
+            "https://cdn.jsdelivr.net",
+        ];
+        const styleSrcUrls = [
+            "https://kit-free.fontawesome.com/",
+            "https://stackpath.bootstrapcdn.com/",
+            "https://api.mapbox.com/",
+            "https://api.tiles.mapbox.com/",
+            "https://fonts.googleapis.com/",
+            "https://use.fontawesome.com/",
+            "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+        ];
+        const connectSrcUrls = [
+            "https://api.mapbox.com/",
+            "https://a.tiles.mapbox.com/",
+            "https://b.tiles.mapbox.com/",
+            "https://events.mapbox.com/",
+        ];
+        const fontSrcUrls = [];
+        if(process.env.NODE_ENV !== 'production'){
+            require('dotenv').config()
     }
-    // MAKE SURE TO ENCODE YOUR DB_URL IF YOUR CREDENTIALS CONTAINS SPECIAL CHARACTERS
-    /* const dburl = process.env.DB_URL; */
-    mongoose.connect('mongodb://localhost:27017/lb-camp');
+
+    mongoose.connect(dburl);
     mongoose.connection.on("error", console.error.bind(console, "Connection Error"))
     mongoose.connection.once("open", () => console.log("Database Connected"));
 // Middlewares:
@@ -15,50 +61,14 @@
     app.use(methodOverride("_method"));
     app.use(express.urlencoded({extended: true}));
     app.use(express.static(path.join(__dirname, "public")));
-    const sessionConfig = {
-        secret: "secret",
-        resave: false,
-        saveUninitialized: false,
-        cookie:{
-            httpOnly: true,
-            expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
-            maxAge: 1000 * 60 * 60 * 24 * 7
-        }
-    }
     app.use(session(sessionConfig));
     app.use(flash());
-
     app.use(passport.initialize());
     app.use(passport.session());
-    passport.use( new passportLocal( User.authenticate()));
-   
+    passport.use( new passportLocal( User.authenticate())); 
     passport.serializeUser( User.serializeUser());
     passport.deserializeUser( User.deserializeUser());
 
-    const scriptSrcUrls = [
-        "https://stackpath.bootstrapcdn.com/",
-        "https://api.tiles.mapbox.com/",
-        "https://api.mapbox.com/",
-        "https://kit.fontawesome.com/",
-        "https://cdnjs.cloudflare.com/",
-        "https://cdn.jsdelivr.net",
-    ];
-    const styleSrcUrls = [
-        "https://kit-free.fontawesome.com/",
-        "https://stackpath.bootstrapcdn.com/",
-        "https://api.mapbox.com/",
-        "https://api.tiles.mapbox.com/",
-        "https://fonts.googleapis.com/",
-        "https://use.fontawesome.com/",
-        "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
-    ];
-    const connectSrcUrls = [
-        "https://api.mapbox.com/",
-        "https://a.tiles.mapbox.com/",
-        "https://b.tiles.mapbox.com/",
-        "https://events.mapbox.com/",
-    ];
-    const fontSrcUrls = [];
     app.use(
         helmet.contentSecurityPolicy({
             directives: {

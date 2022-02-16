@@ -2,7 +2,9 @@
     if(process.env.NODE_ENV !== 'production'){
         require('dotenv').config()
     }
-    mongoose.connect("mongodb://localhost:27017/lb-camp",);
+    const dburl = process.env.DB_URL;
+    console.log(dburl)
+    mongoose.connect(dburl);
     mongoose.connection.on("error", console.error.bind(console, "Connection Error"))
     mongoose.connection.once("open", () => console.log("Database Connected"));
 // Middlewares:

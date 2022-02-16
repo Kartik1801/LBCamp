@@ -2,8 +2,8 @@
     if(process.env.NODE_ENV !== 'production'){
         require('dotenv').config()
     }
+    // MAKE SURE TO ENCODE YOUR DB_URL IF YOUR CREDENTIALS CONTAINS SPECIAL CHARACTERS
     const dburl = process.env.DB_URL;
-    console.log(dburl)
     mongoose.connect(dburl);
     mongoose.connection.on("error", console.error.bind(console, "Connection Error"))
     mongoose.connection.once("open", () => console.log("Database Connected"));

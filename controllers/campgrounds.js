@@ -2,7 +2,7 @@
     if(process.env.NODE_ENV !== 'production'){
         require('dotenv').config()
     }
-    const mapboxToken = process.env.MAP_TOKEN;
+    const mapboxToken = process.env.MAPBOX_TOKEN;
     const geocoder = mbxGeocoding({ accessToken: mapboxToken })
 
     module.exports.index = async (req, res, next) => {

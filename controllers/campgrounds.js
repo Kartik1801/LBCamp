@@ -14,7 +14,6 @@
     module.exports.renderNewForm = (req, res) => {
             res.render("campgrounds/new");
     }
-    
     module.exports.createCampground = async (req, res, next) => {
             if (!req.body.campgrounds) throw new generateError(400, "Missing/Invalid campgrounds Data.");         
             const camp = new Campground(req.body.campgrounds);

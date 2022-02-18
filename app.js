@@ -1,11 +1,12 @@
 ((express, app, path, mongoose, methodOverride, ejsMate, generateError, campgroundRoutes, reviewRoutes, 
     session, flash, passport, passportLocal, User, userRoutes, expressMongoSanitize, helmet ) => {
         // MAKE SURE TO ENCODE YOUR DB_URL IF YOUR CREDENTIALS CONTAINS SPECIAL CHARACTERS
-        const dburl = /* process.env.DB_URL || */ 'mongodb://localhost:27017/lb-camp';
+        const dburl = process.env.DB_URL || 'mongodb://localhost:27017/lb-camp';
+        const secret = process.env.SECRET || "secret";
         const MongoDBStore = require("connect-mongo")
         const store = MongoDBStore.create({
             mongoUrl: dburl,
-            secret: 'secret',
+            secret,
             touchAfter: 24 * 60 * 60  
         })
         store.on("error", function(e){
@@ -13,7 +14,7 @@
         })
         const sessionConfig = {
             store,
-            secret: "secret",
+            secret,
             resave: false,
             saveUninitialized: false,
             cookie:{

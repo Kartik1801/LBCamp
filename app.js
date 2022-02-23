@@ -4,7 +4,7 @@
             require('dotenv').config()
         }
         // MAKE SURE TO ENCODE YOUR DB_URL IF YOUR CREDENTIALS CONTAINS SPECIAL CHARACTERS
-        const dburl = process.env.DB_URL || 'mongodb://localhost:27017/lb-camp';
+        const dburl =  'mongodb://localhost:27017/lb-camp';
         const secret = process.env.SECRET || "secret";
         const MongoDBStore = require("connect-mongo")
         const store = MongoDBStore.create({

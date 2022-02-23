@@ -3,7 +3,7 @@
         require('dotenv').config()
     }
     const mapboxToken = process.env.MAPBOX_TOKEN;
-    const geocoder = mbxGeocoding({ accessToken: mapboxToken || process.env.MAPBOX_TOKEN })
+    const geocoder = mbxGeocoding({ accessToken: "sk.eyJ1Ijoia2QxODAxIiwiYSI6ImNrenp1cDN0NTAwem0zZG1zY2gzMTI5NWUifQ.A3Qp-nI6gAlpweINAVEJqA" || process.env.MAPBOX_TOKEN })
 
     module.exports.index = async (req, res, next) => {
             const campground = await Campground.find({});

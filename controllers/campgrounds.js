@@ -3,7 +3,7 @@ const generateError = require('../utilities/generateError');
 const {cloudinary} = require('../cloudinary/index');
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding'); 
 
-if(process.env.NODE_ENV !== 'production') require('dotenv').config();
+if( process.env.NODE_ENV !== 'production') require('dotenv').config();
 
 const geocoder = mbxGeocoding({ accessToken: process.env.MAPBOX_TOKEN || "sk.eyJ1Ijoia2QxODAxIiwiYSI6ImNrenp1cDN0NTAwem0zZG1zY2gzMTI5NWUifQ.A3Qp-nI6gAlpweINAVEJqA" || process.env.MAPBOX_TOKEN })
 
@@ -36,7 +36,6 @@ module.exports.deleteCampground = async (req, res, next) => {
     req.flash("success", 'Successfully Deleted the Campground!');
     res.redirect(`/campgrounds`)
 }
-    
 module.exports.renderEditForm = async (req, res, next) => {
     const { id } = req.params;
     if (!id) throw new generateError(400, "Missing/Invalid ID.")
@@ -47,8 +46,7 @@ module.exports.renderEditForm = async (req, res, next) => {
         return res.redirect("/campgrounds")
     }    
     res.render("campgrounds/edit",{campground:campground});
-}
-    
+}   
 module.exports.editCampground = async (req, res, next) => {
     const { id } = req.params;
     if (!id) throw new generateError(400, "Missing/Invalid ID.")
